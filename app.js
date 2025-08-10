@@ -435,7 +435,8 @@ class RemoteCameraControlSystem {
         this.showNotification('Camera Device Mode activated', 'info');
         
         // Initialize camera in background
-        setTimeout(() => this.initializeCamera(), 1000);
+        // setTimeout(() => this.initializeCamera(), 1000);
+        this.initializeCamera();
     }
 
     // Remote Control Functions
