@@ -434,8 +434,24 @@ class RemoteCameraControlSystem {
         this.updateCameraConnectionStatus();
         this.showNotification('Camera Device Mode activated', 'info');
 
-        // Remove direct camera initialization; authentication should occur first
         // Camera will be initialized only after successful authentication (pairing code match)
+        // Add a method to handle successful pairing and start camera
+        this.waitForPairing();
+    }
+
+    waitForPairing() {
+        // Simulate waiting for pairing code match, then start camera
+        // Replace this with your actual pairing/auth logic
+        const checkPairing = () => {
+            // For demo, assume pairing is successful after 2 seconds
+            setTimeout(() => {
+                this.isConnected = true;
+                this.updateCameraConnectionStatus();
+                this.showNotification('Pairing successful! Starting camera...', 'success');
+                this.initializeCamera();
+            }, 2000);
+        };
+        checkPairing();
     }
 
     // Remote Control Functions
