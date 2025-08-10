@@ -434,9 +434,10 @@ class RemoteCameraControlSystem {
         this.updateCameraConnectionStatus();
         this.showNotification('Camera Device Mode activated', 'info');
         
-        // Initialize camera in background
-        // setTimeout(() => this.initializeCamera(), 1000);
-        this.initializeCamera();
+        // Only initialize camera if pairing code matches 6 digits
+        if (this.pairingCode && /^\d{6}$/.test(this.pairingCode)) {
+            this.initializeCamera();
+        }
     }
 
     // Remote Control Functions
