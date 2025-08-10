@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Remote Camera Control System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Mode Selection Screen -->
+        <div class="mode-selection" id="modeSelection">
+            <div class="mode-header">
+                <h1>Camera Control System</h1>
+                <p>Choose your device mode</p>
+            </div>
+            <div class="mode-options">
+                <button class="mode-card" id="remoteControlMode">
+                    <div class="mode-icon">📱</div>
+                    <h3>Remote Control</h3>
+                    <p>Control camera devices remotely</p>
+                    <div class="mode-features">
+                        <span>• Control multiple cameras</span>
+                        <span>• Live telemetry monitoring</span>
+                        <span>• Recording management</span>
+                    </div>
+                </button>
+                <button class="mode-card" id="cameraDeviceMode">
+                    <div class="mode-icon">📹</div>
+                    <h3>Camera Device</h3>
+                    <p>Use this device as a camera</p>
+                    <div class="mode-features">
+                        <span>• Live camera preview</span>
+                        <span>• Remote controllable</span>
+                        <span>• Video recording</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Remote Control Interface -->
+        <div class="remote-control-app hidden" id="remoteControlApp">
+            <!-- Header -->
+            <div class="app-header">
+                <button class="back-btn" id="backFromRemote">←</button>
+                <h2>Remote Control</h2>
+                <div class="connection-status" id="remoteConnectionStatus">
+                    <div class="connection-dot"></div>
+                    <span id="remoteConnectionText">Disconnected</span>
+                </div>
+            </div>
+
+            <!-- Connection Section -->
+            <div class="connection-section" id="connectionSection">
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Connect to Camera Device</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="connection-methods">
+                            <div class="connection-method">
+                                <h4>QR Code Scanner</h4>
+                                <button class="btn btn--primary" id="scanQRBtn">Scan QR Code</button>
+                                <div class="qr-scanner" id="qrScanner">
+                                    <video id="scannerVideo" autoplay muted playsinline></video>
+                                    <div class="scanner-overlay">
+                                        <div class="scanner-frame"></div>
+                                    </div>
+                                    <button class="btn btn--secondary" id="closeScannerBtn">Close Scanner</button>
+                                </div>
+                            </div>
+                            <div class="connection-divider">OR</div>
+                            <div class="connection-method">
+                                <h4>Connection Code</h4>
+                                <input type="text" class="form-control" id="connectionCodeInput" placeholder="Enter 6-digit code" maxlength="6">
+                                <button class="btn btn--primary" id="connectCodeBtn">Connect</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Control Dashboard -->
+            <div class="control-dashboard hidden" id="controlDashboard">
+                <!-- Device Status Cards -->
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="status-icon">🔋</div>
+                        <div class="status-info">
+                            <div class="status-label">Battery</div>
+                            <div class="status-value" id="remoteBatteryLevel">85%</div>
+                        </div>
+                        <div class="battery-indicator">
+                            <div class="battery-shell">
+                                <div class="battery-fill" id="remoteBatteryFill"></div>
+                                <div class="battery-tip"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-icon">🌡️</div>
+                        <div class="status-info">
+                            <div class="status-label">Temperature</div>
+                            <div class="status-value" id="remoteTemperature">72°F</div>
+                        </div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-icon">💾</div>
+                        <div class="status-info">
+                            <div class="status-label">Storage</div>
+                            <div class="status-value" id="remoteStorage">30GB</div>
+                        </div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-icon">📊</div>
+                        <div class="status-info">
+                            <div class="status-label">Signal</div>
+                            <div class="status-value" id="remoteSignal">85%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recording Controls -->
+                <div class="recording-section">
+                    <div class="recording-status" id="recordingStatus">
+                        <div class="recording-indicator">
+                            <div class="rec-dot" id="remoteRecDot"></div>
+                            <span id="recordingStatusText">Ready to Record</span>
+                            <span class="recording-duration" id="remoteRecordingDuration">00:00</span>
+                        </div>
+                    </div>
+                    <div class="recording-controls">
+                        <button class="record-button" id="remoteRecordButton">
+                            <div class="record-circle">
+                                <div class="record-inner"></div>
+                            </div>
+                        </button>
+                        <div class="record-actions">
+                            <button class="btn btn--secondary" id="stopRecordingBtn">Stop</button>
+                            <button class="btn btn--outline" id="pauseRecordingBtn">Pause</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Camera Controls -->
+                <div class="camera-settings">
+                    <h3>Camera Settings</h3>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label>Quality</label>
+                            <select class="form-control" id="remoteQualitySelect">
+                                <option value="720p">HD (720p)</option>
+                                <option value="1080p" selected>Full HD (1080p)</option>
+                                <option value="4k">4K</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>Frame Rate</label>
+                            <select class="form-control" id="remoteFramerateSelect">
+                                <option value="30" selected>30 FPS</option>
+                                <option value="60">60 FPS</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>Zoom</label>
+                            <div class="zoom-control">
+                                <button class="btn btn--outline" id="remoteZoomOut">-</button>
+                                <span id="remoteZoomValue">1.0x</span>
+                                <button class="btn btn--outline" id="remoteZoomIn">+</button>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Camera</label>
+                            <button class="btn btn--outline" id="remoteFlipCamera">Flip Camera</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="action-btn" id="remoteToggleFlash">
+                        <span>⚡</span>
+                        <span>Flash</span>
+                    </button>
+                    <button class="action-btn" id="remoteToggleGrid">
+                        <span>⊞</span>
+                        <span>Grid</span>
+                    </button>
+                    <button class="action-btn" id="remoteViewGallery">
+                        <span>🖼️</span>
+                        <span>Gallery</span>
+                    </button>
+                    <button class="action-btn" id="remoteDisconnect">
+                        <span>🔌</span>
+                        <span>Disconnect</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Camera Device Interface -->
+        <div class="camera-device-app hidden" id="cameraDeviceApp">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-left">
+                    <button class="back-btn" id="backFromCamera">←</button>
+                    <span class="time" id="currentTime">10:00</span>
+                    <div class="connection-status" id="cameraConnectionStatus">
+                        <div class="connection-dot"></div>
+                        <span id="cameraConnectionText">Waiting...</span>
+                    </div>
+                </div>
+                <div class="status-right">
+                    <div class="battery-indicator">
+                        <div class="battery-shell">
+                            <div class="battery-fill" id="cameraBatteryFill"></div>
+                            <div class="battery-tip"></div>
+                        </div>
+                        <span id="cameraBatteryText">85%</span>
+                    </div>
+                    <div class="temperature-indicator">
+                        <span class="temp-icon">🌡️</span>
+                        <span id="cameraTemperatureText">72°F</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pairing Code Display -->
+            <div class="pairing-section" id="pairingSection">
+                <div class="pairing-card">
+                    <h3>Pairing Code</h3>
+                    <div class="pairing-code" id="pairingCodeDisplay">------</div>
+                    <p>Enter this code on your remote control device</p>
+                    <div class="qr-code-container">
+                        <div class="qr-code" id="qrCodeDisplay"></div>
+                        <p>Or scan this QR code</p>
+                    </div>
+                    <button class="btn btn--primary" id="refreshPairingBtn">Generate New Code</button>
+                </div>
+            </div>
+
+            <!-- Camera Preview -->
+            <div class="camera-container" id="cameraContainer">
+                <video id="videoPreview" autoplay muted playsinline></video>
+                
+                <!-- Camera Overlays -->
+                <div class="camera-overlays">
+                    <!-- Recording Indicator -->
+                    <div class="recording-indicator" id="cameraRecordingIndicator">
+                        <div class="rec-dot"></div>
+                        <span>REC</span>
+                        <span id="cameraRecordingDuration">00:00</span>
+                    </div>
+
+                    <!-- Grid Lines -->
+                    <div class="camera-grid" id="cameraGrid">
+                        <div class="grid-line horizontal"></div>
+                        <div class="grid-line horizontal"></div>
+                        <div class="grid-line vertical"></div>
+                        <div class="grid-line vertical"></div>
+                    </div>
+
+                    <!-- Remote Control Indicator -->
+                    <div class="remote-control-indicator" id="cameraRemoteIndicator">
+                        <div class="remote-icon">📱</div>
+                        <span>Remote Control Active</span>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div class="error-message" id="cameraErrorMessage">
+                    <div class="error-icon">⚠️</div>
+                    <h3>Camera Access Required</h3>
+                    <p>Please allow camera and microphone access to use this app.</p>
+                    <button class="btn btn--primary" id="cameraRetryBtn">Retry</button>
+                </div>
+            </div>
+
+            <!-- Camera Controls -->
+            <div class="camera-controls" id="cameraControls">
+                <!-- Main Controls -->
+                <div class="main-controls">
+                    <div class="zoom-controls">
+                        <button class="zoom-btn" id="cameraZoomOut">-</button>
+                        <span class="zoom-value" id="cameraZoomValue">1.0x</span>
+                        <button class="zoom-btn" id="cameraZoomIn">+</button>
+                    </div>
+
+                    <button class="record-button" id="cameraRecordButton">
+                        <div class="record-circle">
+                            <div class="record-inner"></div>
+                        </div>
+                    </button>
+
+                    <button class="flip-button" id="cameraFlipButton">
+                        <div class="flip-icon">🔄</div>
+                    </button>
+                </div>
+
+                <!-- Control Actions -->
+                <div class="control-actions">
+                    <button class="control-btn" id="cameraFlashBtn">
+                        <span>⚡</span>
+                    </button>
+                    <button class="control-btn" id="cameraGridBtn">
+                        <span>⊞</span>
+                    </button>
+                    <button class="control-btn" id="cameraGalleryBtn">
+                        <span>🖼️</span>
+                        <span class="file-count" id="cameraFileCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="notification-container" id="notificationContainer"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
